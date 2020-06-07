@@ -1,26 +1,32 @@
+# -*- coding: utf-8 -*-
 #CREANDO LOGIN CON PYTHON Y TKINTER.
 
-#IMPORTAMOS LIBRERÍAS NECESARIAS.
+#IMPORTAMOS LIBRERIAS NECESARIAS.
 from tkinter import *
 import os
 
 #CREAMOS VENTANA PRINCIPAL.
 def ventana_inicio():
     global ventana_principal
-    pestas_color="DarkGrey"
+    pestas_color="darkslategray"
+
     ventana_principal=Tk()
     ventana_principal.geometry("300x250")#DIMENSIONES DE LA VENTANA
     ventana_principal.title("Login con tkinter")#TITULO DE LA VENTANA
-    Label(text="Escoja su opción", bg="LightGreen", width="300", height="2", font=("Calibri", 13)).pack()#ETIQUETA CON TEXTO
+
+    Label(text="Elegir opcion:", bg="slategray", width="300", height="2", font=("Calibri", 13)).pack()#ETIQUETA CON TEXTO
     Label(text="").pack()
-    Button(text="Acceder", height="2", width="30", bg=pestas_color, command=login).pack() #BOTÓN "Acceder"
+
+    Button(text="Acceder", height="2", width="30", bg=pestas_color, command= lambda:[login(),ventana_principal.top]).pack() #boton "Acceder"
     Label(text="").pack()
-    Button(text="Registrarse", height="2", width="30", bg=pestas_color, command=registro).pack() #BOTÓN "Registrarse".
+
+    Button(text="Registrarse", height="2", width="30", bg=pestas_color, command=registro).pack() #boton "Registrarse".
     Label(text="").pack()
     ventana_principal.mainloop()
 
 #CREAMOS VENTANA PARA REGISTRO.
 def registro():
+
     global ventana_registro
     ventana_registro = Toplevel(ventana_principal)
     ventana_registro.title("Registro")
@@ -33,23 +39,27 @@ def registro():
     nombre_usuario = StringVar() #DECLARAMOS "string" COMO TIPO DE DATO PARA "nombre_usuario"
     clave = StringVar() #DECLARAMOS "sytring" COMO TIPO DE DATO PARA "clave"
  
-    Label(ventana_registro, text="Introduzca datos", bg="LightGreen").pack()
+    Label(ventana_registro, text="Introdocir datos:", bg="slategray").pack()
     Label(ventana_registro, text="").pack()
+
     etiqueta_nombre = Label(ventana_registro, text="Nombre de usuario * ")
     etiqueta_nombre.pack()
     entrada_nombre = Entry(ventana_registro, textvariable=nombre_usuario) #ESPACIO PARA INTRODUCIR EL NOMBRE.
     entrada_nombre.pack()
+
     etiqueta_clave = Label(ventana_registro, text="Contraseña * ")
     etiqueta_clave.pack()
     entrada_clave = Entry(ventana_registro, textvariable=clave, show='*') #ESPACIO PARA INTRODUCIR LA CONTRASEÑA.
     entrada_clave.pack()
     Label(ventana_registro, text="").pack()
-    Button(ventana_registro, text="Registrarse", width=10, height=1, bg="LightGreen", command = registro_usuario).pack() #BOTÓN "Registrarse"
+
+    Button(ventana_registro, text="Registrarse", width=10, height=1, bg="slategray", command = registro_usuario).pack() #boton "Registrarse"
 
 #CREAMOS VENTANA PARA LOGIN.
 
 def login():
     global ventana_login
+
     ventana_login = Toplevel(ventana_principal)
     ventana_login.title("Acceso a la cuenta")
     ventana_login.geometry("300x250")
@@ -69,10 +79,12 @@ def login():
     entrada_login_usuario = Entry(ventana_login, textvariable=verifica_usuario)
     entrada_login_usuario.pack()
     Label(ventana_login, text="").pack()
+
     Label(ventana_login, text="Contraseña * ").pack()
     entrada_login_clave = Entry(ventana_login, textvariable=verifica_clave, show= '*')
     entrada_login_clave.pack()
     Label(ventana_login, text="").pack()
+    
     Button(ventana_login, text="Acceder", width=10, height=1, command = verifica_login).pack()
 
 #VENTANA "VERIFICACION DE LOGIN".
@@ -80,8 +92,8 @@ def login():
 def verifica_login():
     usuario1 = verifica_usuario.get()
     clave1 = verifica_clave.get()
-    entrada_login_usuario.delete(0, END) #BORRA INFORMACIÓN DEL CAMPO "Nombre usuario *" AL MOSTRAR NUEVA VENTANA.
-    entrada_login_clave.delete(0, END) #BORRA INFORMACIÓN DEL CAMPO "Contraseña *" AL MOSTRAR NUEVA VENTANA.
+    entrada_login_usuario.delete(0, END) #BORRA INFORMACION DEL CAMPO "Nombre usuario *" AL MOSTRAR NUEVA VENTANA.
+    entrada_login_clave.delete(0, END) #BORRA INFORMACION DEL CAMPO "Contraseña *" AL MOSTRAR NUEVA VENTANA.
  
     lista_archivos = os.listdir() #GENERA LISTA DE ARCHIVOS UBICADOS EN EL DIRECTORIO.
     #SI EL NOMBRE SE ENCUENTRA EN LA LISTA DE ARCHIVOS..
@@ -90,11 +102,11 @@ def verifica_login():
         verifica = archivo1.read().splitlines() #LECTURA DEL ARCHIVO QUE CONTIENE EL nombre Y contraseña.
         #SI LA CONTRASEÑA INTRODUCIDA SE ENCUENTRA EN EL ARCHIVO...
         if clave1 in verifica:
-            exito_login() #...EJECUTAR FUNCIÓN "exito_login()"
+            exito_login() #...EJECUTAR FUNCION "exito_login()"
         #SI LA CONTRASEÑA NO SE ENCUENTRA EN EL ARCHIVO....
         else:
             no_clave() #...EJECUTAR "no_clave()"
-   # SI EL NOMBRE INTRODUCIDO NO SE ENCUENTRA EN EL DIRECTORIO...
+    #SI EL NOMBRE INTRODUCIDO NO SE ENCUENTRA EN EL DIRECTORIO...
     else:
         no_usuario() #..EJECUTA "no_usuario()".
 
