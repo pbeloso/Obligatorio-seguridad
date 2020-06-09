@@ -17,8 +17,9 @@ def ventana_inicio():
     Label(text="Elegir opcion:", bg="slategray", width="300", height="2", font=("Calibri", 13)).pack()#ETIQUETA CON TEXTO
     Label(text="").pack()
 
-    Button(text="Acceder", height="2", width="30", bg=pestas_color, command= lambda:[login(),ventana_principal.top]).pack() #boton "Acceder"
+    Button(text="Acceder", height="2", width="30", bg=pestas_color, command= lambda:[login(),ventana_principal.withdraw()]).pack() #boton "Acceder"
     Label(text="").pack()
+
 
     Button(text="Registrarse", height="2", width="30", bg=pestas_color, command=registro).pack() #boton "Registrarse".
     Label(text="").pack()
