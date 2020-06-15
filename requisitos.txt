@@ -1,3 +1,5 @@
 pip3 install pycryptodome
 
 pip3 install --user --upgrade bcrypt
+
+$ sudo pip install -r requisitos.txt 

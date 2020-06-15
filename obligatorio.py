@@ -5,6 +5,8 @@
 from tkinter import *
 import os
 
+from Cifrados import hashPass, compararPass
+
 #CREAMOS VENTANA PRINCIPAL.
 def ventana_inicio():
     global ventana_principal
@@ -12,14 +14,15 @@ def ventana_inicio():
 
     ventana_principal=Tk()
     ventana_principal.geometry("300x250")#DIMENSIONES DE LA VENTANA
-    ventana_principal.title("Login con tkinter")#TITULO DE LA VENTANA
+    ventana_principal.title("Login")#TITULO DE LA VENTANA
 
     Label(text="Elegir opcion:", bg="slategray", width="300", height="2", font=("Calibri", 13)).pack()#ETIQUETA CON TEXTO
     Label(text="").pack()
 
-    Button(text="Acceder", height="2", width="30", bg=pestas_color, command= lambda:[login(),ventana_principal.withdraw()]).pack() #boton "Acceder"
+    Button(text="Acceder", height="2", width="30", bg=pestas_color, command= login).pack() #boton "Acceder"
     Label(text="").pack()
 
+    #lambda:[login(),ventana_principal.withdraw()]
 
     Button(text="Registrarse", height="2", width="30", bg=pestas_color, command=registro).pack() #boton "Registrarse".
     Label(text="").pack()
@@ -43,18 +46,22 @@ def registro():
     Label(ventana_registro, text="Introdocir datos:", bg="slategray").pack()
     Label(ventana_registro, text="").pack()
 
-    etiqueta_nombre = Label(ventana_registro, text="Nombre de usuario * ")
+    etiqueta_nombre = Label(ventana_registro, text="Nombre de usuario: ")
     etiqueta_nombre.pack()
     entrada_nombre = Entry(ventana_registro, textvariable=nombre_usuario) #ESPACIO PARA INTRODUCIR EL NOMBRE.
     entrada_nombre.pack()
 
-    etiqueta_clave = Label(ventana_registro, text="Contraseña * ")
+    etiqueta_clave = Label(ventana_registro, text="Contraseña: ")
     etiqueta_clave.pack()
     entrada_clave = Entry(ventana_registro, textvariable=clave, show='*') #ESPACIO PARA INTRODUCIR LA CONTRASEÑA.
     entrada_clave.pack()
+
+    
+
     Label(ventana_registro, text="").pack()
 
     Button(ventana_registro, text="Registrarse", width=10, height=1, bg="slategray", command = registro_usuario).pack() #boton "Registrarse"
+    
 
 #CREAMOS VENTANA PARA LOGIN.
 
@@ -76,12 +83,12 @@ def login():
     global entrada_login_usuario
     global entrada_login_clave
  
-    Label(ventana_login, text="Nombre usuario * ").pack()
+    Label(ventana_login, text="Nombre usuario:").pack()
     entrada_login_usuario = Entry(ventana_login, textvariable=verifica_usuario)
     entrada_login_usuario.pack()
     Label(ventana_login, text="").pack()
 
-    Label(ventana_login, text="Contraseña * ").pack()
+    Label(ventana_login, text="Contraseña:").pack()
     entrada_login_clave = Entry(ventana_login, textvariable=verifica_clave, show= '*')
     entrada_login_clave.pack()
     Label(ventana_login, text="").pack()
@@ -96,8 +103,15 @@ def verifica_login():
     entrada_login_usuario.delete(0, END) #BORRA INFORMACION DEL CAMPO "Nombre usuario *" AL MOSTRAR NUEVA VENTANA.
     entrada_login_clave.delete(0, END) #BORRA INFORMACION DEL CAMPO "Contraseña *" AL MOSTRAR NUEVA VENTANA.
  
-    lista_archivos = os.listdir() #GENERA LISTA DE ARCHIVOS UBICADOS EN EL DIRECTORIO.
-    #SI EL NOMBRE SE ENCUENTRA EN LA LISTA DE ARCHIVOS..
+    ListaUsuarios = open("Usuarios.txt", "r")
+
+    for i in ListaUsuarios:
+        user = i.split(";")
+        if usuario1 == user[0]:
+            print(compararPass(clave1, user[1].rstrip()))  #.rstrip() elimina el salto de linea
+        else:
+            print("papafrita")
+    """
     if usuario1 in lista_archivos:
         archivo1 = open(usuario1, "r") #APERTURA DE ARCHIVO EN MODO LECTURA
         verifica = archivo1.read().splitlines() #LECTURA DEL ARCHIVO QUE CONTIENE EL nombre Y contraseña.
@@ -110,7 +124,7 @@ def verifica_login():
     #SI EL NOMBRE INTRODUCIDO NO SE ENCUENTRA EN EL DIRECTORIO...
     else:
         no_usuario() #..EJECUTA "no_usuario()".
-
+    """
 
 # VENTANA "Login finalizado con exito".
  
@@ -160,17 +174,29 @@ def borrar_no_usuario():
 def registro_usuario():
  
     usuario_info = nombre_usuario.get()
-    clave_info = clave.get()
+    clave_info = hashPass(clave.get())
+    
+    if (verifica_usuario(usuario_info)==False):
+        file = open("Usuarios.txt", "a") #agrego datos al archivos usuario
+        file.write(usuario_info + ";" + str(clave_info) + "\n")
+        file.close()
+    
+        entrada_nombre.delete(0, END)
+        entrada_clave.delete(0, END)
+    
+        Label(ventana_registro, text="Registro completado con éxito", fg="green", font=("calibri", 11)).pack()
+    else:
+        Label(ventana_registro, text="Nombre de usuario repetido", fg="red", font=("calibri", 11)).pack()
  
-    file = open(usuario_info, "w") #CREACION DE ARCHIVO CON "nombre" y "clave"
-    file.write(usuario_info + "\n")
-    file.write(clave_info)
-    file.close()
- 
-    entrada_nombre.delete(0, END)
-    entrada_clave.delete(0, END)
- 
-    Label(ventana_registro, text="Registro completado con éxito", fg="green", font=("calibri", 11)).pack()
- 
+def verifica_usuario(nombre):
+    repetido = False
+    ListaUsuarios = open("Usuarios.txt", "r")
+    for i in ListaUsuarios:
+        user = i.split(";")
+        if(user[0] == nombre):
+            repetido = True
+
+    return repetido 
+
  
 ventana_inicio()  #EJECUCIÓN DE LA VENTANA DE INICIO.
