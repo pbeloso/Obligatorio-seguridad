@@ -13,18 +13,18 @@ def ventana_inicio():
     pestas_color="darkslategray"
 
     ventana_principal=Tk()
-    ventana_principal.geometry("300x250")#DIMENSIONES DE LA VENTANA
-    ventana_principal.title("Login")#TITULO DE LA VENTANA
+    ventana_principal.geometry("300x250")
+    ventana_principal.title("Login")
 
-    Label(text="Elegir opcion:", bg="slategray", width="300", height="2", font=("Calibri", 13)).pack()#ETIQUETA CON TEXTO
+    Label(text="Elegir opcion:", bg="slategray", width="300", height="2", font=("Calibri", 13)).pack()
     Label(text="").pack()
 
-    Button(text="Acceder", height="2", width="30", bg=pestas_color, command= login).pack() #boton "Acceder"
+    Button(text="Acceder", height="2", width="30", bg=pestas_color, command= lambda:[login(),ventana_principal.withdraw()]).pack() #boton "Acceder"
     Label(text="").pack()
 
     #lambda:[login(),ventana_principal.withdraw()]
 
-    Button(text="Registrarse", height="2", width="30", bg=pestas_color, command=registro).pack() #boton "Registrarse".
+    Button(text="Registrarse", height="2", width="30", bg=pestas_color, command= lambda:[registro(),ventana_principal.withdraw()]).pack() #boton "Registrarse".
     Label(text="").pack()
     ventana_principal.mainloop()
 
@@ -34,33 +34,33 @@ def registro():
     global ventana_registro
     ventana_registro = Toplevel(ventana_principal)
     ventana_registro.title("Registro")
-    ventana_registro.geometry("300x250")
+    ventana_registro.geometry("300x280")
  
     global nombre_usuario
     global clave
     global entrada_nombre
     global entrada_clave
-    nombre_usuario = StringVar() #DECLARAMOS "string" COMO TIPO DE DATO PARA "nombre_usuario"
-    clave = StringVar() #DECLARAMOS "sytring" COMO TIPO DE DATO PARA "clave"
+    nombre_usuario = StringVar() # string como tipo de dato para nombre_usuario y la clave
+    clave = StringVar() 
  
     Label(ventana_registro, text="Introdocir datos:", bg="slategray").pack()
     Label(ventana_registro, text="").pack()
 
     etiqueta_nombre = Label(ventana_registro, text="Nombre de usuario: ")
     etiqueta_nombre.pack()
-    entrada_nombre = Entry(ventana_registro, textvariable=nombre_usuario) #ESPACIO PARA INTRODUCIR EL NOMBRE.
+    entrada_nombre = Entry(ventana_registro, textvariable=nombre_usuario) 
     entrada_nombre.pack()
 
     etiqueta_clave = Label(ventana_registro, text="Contraseña: ")
     etiqueta_clave.pack()
-    entrada_clave = Entry(ventana_registro, textvariable=clave, show='*') #ESPACIO PARA INTRODUCIR LA CONTRASEÑA.
+    entrada_clave = Entry(ventana_registro, textvariable=clave, show='*') 
     entrada_clave.pack()
 
-    
+    Label(ventana_registro, text="").pack()
+    Button(ventana_registro, text="Registrarse", width=10, height=1, bg="slategray", command = registro_usuario).pack() #boton "Registrarse"
 
     Label(ventana_registro, text="").pack()
-
-    Button(ventana_registro, text="Registrarse", width=10, height=1, bg="slategray", command = registro_usuario).pack() #boton "Registrarse"
+    Button(ventana_registro, text="Volver", width=10, height=1, command = lambda:[ventana_principal.deiconify(),ventana_registro.withdraw()]).pack()
     
 
 #CREAMOS VENTANA PARA LOGIN.
@@ -70,7 +70,7 @@ def login():
 
     ventana_login = Toplevel(ventana_principal)
     ventana_login.title("Acceso a la cuenta")
-    ventana_login.geometry("300x250")
+    ventana_login.geometry("300x280")
     Label(ventana_login, text="Introduzca nombre de usuario y contraseña").pack()
     Label(ventana_login, text="").pack()
  
@@ -95,36 +95,31 @@ def login():
     
     Button(ventana_login, text="Acceder", width=10, height=1, command = verifica_login).pack()
 
-#VENTANA "VERIFICACION DE LOGIN".
+    Label(ventana_login, text="").pack()
+    Button(ventana_login, text="Volver", width=10, height=1, command = lambda:[ventana_principal.deiconify(),ventana_login.withdraw()]).pack()
+
+#VENTANA VERIFICACION DE LOGIN.
 
 def verifica_login():
     usuario1 = verifica_usuario.get()
     clave1 = verifica_clave.get()
-    entrada_login_usuario.delete(0, END) #BORRA INFORMACION DEL CAMPO "Nombre usuario *" AL MOSTRAR NUEVA VENTANA.
-    entrada_login_clave.delete(0, END) #BORRA INFORMACION DEL CAMPO "Contraseña *" AL MOSTRAR NUEVA VENTANA.
- 
-    ListaUsuarios = open("Usuarios.txt", "r")
+    entrada_login_usuario.delete(0, END)
+    entrada_login_clave.delete(0, END) 
+    listaUsuarios = open("Usuarios.txt", "r")
 
-    for i in ListaUsuarios:
-        user = i.split(";")
-        if usuario1 == user[0]:
-            print(compararPass(clave1, user[1].rstrip()))  #.rstrip() elimina el salto de linea
-        else:
-            print("papafrita")
-    """
-    if usuario1 in lista_archivos:
-        archivo1 = open(usuario1, "r") #APERTURA DE ARCHIVO EN MODO LECTURA
-        verifica = archivo1.read().splitlines() #LECTURA DEL ARCHIVO QUE CONTIENE EL nombre Y contraseña.
-        #SI LA CONTRASEÑA INTRODUCIDA SE ENCUENTRA EN EL ARCHIVO...
-        if clave1 in verifica:
-            exito_login() #...EJECUTAR FUNCION "exito_login()"
-        #SI LA CONTRASEÑA NO SE ENCUENTRA EN EL ARCHIVO....
-        else:
-            no_clave() #...EJECUTAR "no_clave()"
-    #SI EL NOMBRE INTRODUCIDO NO SE ENCUENTRA EN EL DIRECTORIO...
+    fafa = verificar_usuario (usuario1)
+    if fafa:
+        for i in listaUsuarios:
+            user = i.split(";")
+            if ( user[0] == usuario1):
+                resultado = compararPass(clave1, user[1].rstrip())  #.rstrip() elimina el salto de linea
+
+                if resultado:
+                    exito_login()
+                else:
+                    no_clave()
     else:
-        no_usuario() #..EJECUTA "no_usuario()".
-    """
+        no_usuario()
 
 # VENTANA "Login finalizado con exito".
  
@@ -176,7 +171,7 @@ def registro_usuario():
     usuario_info = nombre_usuario.get()
     clave_info = hashPass(clave.get())
     
-    if (verifica_usuario(usuario_info)==False):
+    if (verificar_usuario(usuario_info)==False):
         file = open("Usuarios.txt", "a") #agrego datos al archivos usuario
         file.write(usuario_info + ";" + str(clave_info) + "\n")
         file.close()
@@ -188,15 +183,16 @@ def registro_usuario():
     else:
         Label(ventana_registro, text="Nombre de usuario repetido", fg="red", font=("calibri", 11)).pack()
  
-def verifica_usuario(nombre):
-    repetido = False
+#VERIFICA SI HAY USUARIO EN ARCHIVO
+
+def verificar_usuario(nombre):
     ListaUsuarios = open("Usuarios.txt", "r")
     for i in ListaUsuarios:
         user = i.split(";")
         if(user[0] == nombre):
-            repetido = True
+            return True
 
-    return repetido 
+    return False 
 
  
 ventana_inicio()  #EJECUCIÓN DE LA VENTANA DE INICIO.
