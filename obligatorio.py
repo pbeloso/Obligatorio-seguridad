@@ -6,6 +6,7 @@ from tkinter import *
 import os
 
 from Cifrados import hashPass, compararPass
+from Verificaciones import verificar_clave, verificar_usuario
 
 #CREAMOS VENTANA PRINCIPAL.
 def ventana_inicio():
@@ -43,7 +44,7 @@ def registro():
     nombre_usuario = StringVar() # string como tipo de dato para nombre_usuario y la clave
     clave = StringVar() 
  
-    Label(ventana_registro, text="Introdocir datos:", bg="slategray").pack()
+    Label(ventana_registro, text="Introdocir datos:", bg="slategray", width="300", height="2", font=("Calibri", 13)).pack()
     Label(ventana_registro, text="").pack()
 
     etiqueta_nombre = Label(ventana_registro, text="Nombre de usuario: ")
@@ -55,9 +56,11 @@ def registro():
     etiqueta_clave.pack()
     entrada_clave = Entry(ventana_registro, textvariable=clave, show='*') 
     entrada_clave.pack()
+    Label(ventana_registro, font=("Calibri", 9), text="minimo 8 caracteres, 1 mayuscula y 1 numero").pack()
 
     Label(ventana_registro, text="").pack()
     Button(ventana_registro, text="Registrarse", width=10, height=1, bg="slategray", command = registro_usuario).pack() #boton "Registrarse"
+
 
     Label(ventana_registro, text="").pack()
     Button(ventana_registro, text="Volver", width=10, height=1, command = lambda:[ventana_principal.deiconify(),ventana_registro.withdraw()]).pack()
@@ -71,7 +74,7 @@ def login():
     ventana_login = Toplevel(ventana_principal)
     ventana_login.title("Acceso a la cuenta")
     ventana_login.geometry("300x280")
-    Label(ventana_login, text="Introduzca nombre de usuario y contraseña").pack()
+    Label(ventana_login, text="Introduzca nombre de usuario y contraseña", bg="slategray", width="300", height="2", font=("Calibri", 13)).pack()
     Label(ventana_login, text="").pack()
  
     global verifica_usuario
@@ -107,8 +110,7 @@ def verifica_login():
     entrada_login_clave.delete(0, END) 
     listaUsuarios = open("Usuarios.txt", "r")
 
-    fafa = verificar_usuario (usuario1)
-    if fafa:
+    if len(usuario1)>0 and verificar_usuario(usuario1):
         for i in listaUsuarios:
             user = i.split(";")
             if ( user[0] == usuario1):
@@ -169,30 +171,23 @@ def borrar_no_usuario():
 def registro_usuario():
  
     usuario_info = nombre_usuario.get()
-    clave_info = hashPass(clave.get())
+    clave_info = clave.get()
     
-    if (verificar_usuario(usuario_info)==False):
-        file = open("Usuarios.txt", "a") #agrego datos al archivos usuario
-        file.write(usuario_info + ";" + str(clave_info) + "\n")
-        file.close()
-    
-        entrada_nombre.delete(0, END)
-        entrada_clave.delete(0, END)
-    
-        Label(ventana_registro, text="Registro completado con éxito", fg="green", font=("calibri", 11)).pack()
+    if (verificar_usuario(usuario_info) == False): # si es false quiere decir que no hay otro usuario con ese nombre
+        if (verificar_clave(clave_info) == True):
+            
+            clave_info = hashPass(clave_info)
+            file = open("Usuarios.txt", "a") #agrego datos al archivos usuario
+            file.write(usuario_info + ";" + str(clave_info) + "\n")
+            file.close()
+        
+            entrada_nombre.delete(0, END)
+            entrada_clave.delete(0, END)
+        
+            mensaje = Label(ventana_registro, text="Registro completado con éxito", fg="green", font=("calibri", 11)).pack()
+        else:
+            mensaje = Label(ventana_registro, text="Contraseña invalida", fg="red", font=("calibri", 11)).pack()
     else:
-        Label(ventana_registro, text="Nombre de usuario repetido", fg="red", font=("calibri", 11)).pack()
- 
-#VERIFICA SI HAY USUARIO EN ARCHIVO
-
-def verificar_usuario(nombre):
-    ListaUsuarios = open("Usuarios.txt", "r")
-    for i in ListaUsuarios:
-        user = i.split(";")
-        if(user[0] == nombre):
-            return True
-
-    return False 
-
+        mensaje = Label(ventana_registro, text="Usuario invalido", fg="red", font=("calibri", 11)).pack()
  
 ventana_inicio()  #EJECUCIÓN DE LA VENTANA DE INICIO.
