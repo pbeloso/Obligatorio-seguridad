@@ -29,13 +29,14 @@ def ventana_inicio():
     Label(text="").pack()
     ventana_principal.mainloop()
 
+
 #CREAMOS VENTANA PARA REGISTRO.
 def registro():
 
     global ventana_registro
     ventana_registro = Toplevel(ventana_principal)
     ventana_registro.title("Registro")
-    ventana_registro.geometry("300x280")
+    ventana_registro.geometry("300x320")
  
     global nombre_usuario
     global clave
@@ -64,6 +65,7 @@ def registro():
 
     Label(ventana_registro, text="").pack()
     Button(ventana_registro, text="Volver", width=10, height=1, command = lambda:[ventana_principal.deiconify(),ventana_registro.withdraw()]).pack()
+    
     
 
 #CREAMOS VENTANA PARA LOGIN.
@@ -169,7 +171,7 @@ def borrar_no_usuario():
 #REGISTRO USUARIO
  
 def registro_usuario():
- 
+
     usuario_info = nombre_usuario.get()
     clave_info = clave.get()
     
@@ -184,10 +186,13 @@ def registro_usuario():
             entrada_nombre.delete(0, END)
             entrada_clave.delete(0, END)
         
-            mensaje = Label(ventana_registro, text="Registro completado con éxito", fg="green", font=("calibri", 11)).pack()
+            
+            Label(ventana_registro, text="Registro completado con éxito", fg="green", font=("calibri", 11)).pack()
         else:
-            mensaje = Label(ventana_registro, text="Contraseña invalida", fg="red", font=("calibri", 11)).pack()
+            Label(ventana_registro, text="Contraseña invalida", fg="red", font=("calibri", 11)).pack()
     else:
-        mensaje = Label(ventana_registro, text="Usuario invalido", fg="red", font=("calibri", 11)).pack()
+        Label(ventana_registro, text="", fg="red", font=("calibri", 11)).pack()
+        Label(ventana_registro, text="Usuario invalido", fg="red", font=("calibri", 11)).pack()
+        Label(ventana_registro, text="", fg="red", font=("calibri", 11)).pack()
  
 ventana_inicio()  #EJECUCIÓN DE LA VENTANA DE INICIO.
