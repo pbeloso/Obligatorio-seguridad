@@ -1,15 +1,20 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #CREANDO LOGIN CON PYTHON Y TKINTER.
 
 #IMPORTAMOS LIBRERIAS NECESARIAS.
+from tkinter import filedialog
 from tkinter import *
 import os
 
-from Cifrados import hashPass, compararPass
+from Cifrados import hashPass, compararPass, descifrarArchivo, enviaCifrado, cifrarArchivo
 from Verificaciones import verificar_clave, verificar_usuario
+
+usuario_conectado = ""
 
 #CREAMOS VENTANA PRINCIPAL.
 def ventana_inicio():
+    
     global ventana_principal
     pestas_color="darkslategray"
 
@@ -45,7 +50,7 @@ def registro():
     nombre_usuario = StringVar() # string como tipo de dato para nombre_usuario y la clave
     clave = StringVar() 
  
-    Label(ventana_registro, text="Introdocir datos:", bg="slategray", width="300", height="2", font=("Calibri", 13)).pack()
+    Label(ventana_registro, text="Introducir datos:", bg="slategray", width="300", height="2", font=("Calibri", 13)).pack()
     Label(ventana_registro, text="").pack()
 
     etiqueta_nombre = Label(ventana_registro, text="Nombre de usuario: ")
@@ -67,7 +72,6 @@ def registro():
     Button(ventana_registro, text="Volver", width=10, height=1, command = lambda:[ventana_principal.deiconify(),ventana_registro.withdraw()]).pack()
     
     
-
 #CREAMOS VENTANA PARA LOGIN.
 
 def login():
@@ -119,7 +123,9 @@ def verifica_login():
                 resultado = compararPass(clave1, user[1].rstrip())  #.rstrip() elimina el salto de linea
 
                 if resultado:
-                    exito_login()
+                    usuario_conectado = usuario1
+                    ventana_login.withdraw()
+                    exito_login(usuario_conectado)
                 else:
                     no_clave()
     else:
@@ -127,13 +133,27 @@ def verifica_login():
 
 # VENTANA "Login finalizado con exito".
  
-def exito_login():
-    global ventana_exito
-    ventana_exito = Toplevel(ventana_login)
-    ventana_exito.title("Exito")
-    ventana_exito.geometry("150x100")
-    Label(ventana_exito, text="Login finalizado con exito").pack()
-    Button(ventana_exito, text="OK", command=borrar_exito_login).pack()
+def exito_login(usuario_conectado):
+    global ventana_usuario
+    
+    ventana_usuario = Toplevel(ventana_login)
+    ventana_usuario.title("Elegir opcion")
+    ventana_usuario.geometry("300x250")
+
+    Label(ventana_usuario, text="Elige opcion:", bg="slategray", width="250", height="2", font=("Calibri", 13)).pack()
+    Label(ventana_usuario, text="").pack()
+
+    Button(ventana_usuario, text="Cifrar archivo", width=15, height=1, command = cifrarArchivo).pack()
+    Label(ventana_usuario, text="").pack()
+
+    Button(ventana_usuario, text="Enviar archivo", width=15, height=1, command = enviaCifrado).pack()
+    Label(ventana_usuario, text="").pack()
+
+    Button(ventana_usuario, text="Descifrar archivo", width=15, height=1, command = descifrarArchivo).pack()
+    Label(ventana_usuario, text="").pack()
+
+    Button(ventana_usuario, text="Volver", width=15, height=1, command = lambda:[ventana_principal.deiconify(),ventana_usuario.destroy()]).pack()
+
  
 #VENTANA DE "Contraseña incorrecta".
  
@@ -189,7 +209,7 @@ def registro_usuario():
             
             Label(ventana_registro, text="Registro completado con éxito", fg="green", font=("calibri", 11)).pack()
         else:
-            Label(ventana_registro, text="Contraseña invalida", fg="red", font=("calibri", 11)).pack()
+            Label(ventana_registro, text="Usuario invalido", fg="red", font=("calibri", 11)).pack()
     else:
         Label(ventana_registro, text="", fg="red", font=("calibri", 11)).pack()
         Label(ventana_registro, text="Usuario invalido", fg="red", font=("calibri", 11)).pack()

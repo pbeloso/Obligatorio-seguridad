@@ -1,6 +1,5 @@
 #VERIFICA SI HAY USUARIO EN ARCHIVO
 
-
 def verificar_usuario(nombre):
     if(len(nombre) == 0):              # no cumple
             return True
@@ -13,11 +12,6 @@ def verificar_usuario(nombre):
 
     return False
             
-  
-    
- 
-
-
 #VERIFICA QUE LA CLAVE SEA VALIDA
 
 def verificar_clave(passw):
