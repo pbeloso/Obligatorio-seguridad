@@ -4,7 +4,7 @@ from base64 import b64encode, b64decode
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
-import binascii
+
 import bcrypt
 
 from tkinter import filedialog
@@ -25,7 +25,7 @@ def cifrarArchivo():
     
     # buscar archivo a cifrar
 
-    archivo_abierto = filedialog.askopenfilename(title = "Select file")
+    archivo_abierto = filedialog.askopenfilename(title = "Seleccionar archivo a cifrar")
     nombre = os.path.splitext(os.path.basename(archivo_abierto))[0]
     extension = os.path.splitext(os.path.basename(archivo_abierto))[1]
 
@@ -65,15 +65,24 @@ def cifrarArchivo():
 
 
 def enviaCifrado():
+
+    # agregar public_ al nombre
+
     #buscar archivo secret a enviar
 
-    archivo_secret = filedialog.askopenfilename(title = "Selecciona secret")
+    archivo_secret = filedialog.askopenfilename(title = "Seleccionar archivo secret")
     secret = open (archivo_secret, 'rb')
    
 
+    #cambio nombre de secret a public_secret para saber que usa rsa
+
+    nombre = os.path.split(archivo_secret)[1]
+    nombre = "/public_" + nombre
+    ruta_public_secret = os.path.split(archivo_secret)[0] + nombre
+
     #busca clave publica para hacer rsa
 
-    archivo_clave = filedialog.askopenfilename(title = "Selecciona la clave")
+    archivo_clave = filedialog.askopenfilename(title = "Seleccionar la clave publica")
     clave_publica = open(archivo_clave, 'rb')
     
 
@@ -86,36 +95,42 @@ def enviaCifrado():
 
     #guardar en archivo secret
 
-    secret = open(archivo_secret, 'wb')
+    secret = open(ruta_public_secret, 'wb')
     secret.write(encryptSecret)
     secret.close()
 
 
 def descifrarArchivo():
     
-    #busca clave privada para hacer rsa
-
-    archivo_clave = filedialog.askopenfilename(title = "Selecciona la clave")
-    clave_privada = open(archivo_clave, 'rb')
 
     # buscar archivo a descifrar
 
-    archivo_abierto = filedialog.askopenfilename(title = "Select file")
+    archivo_abierto = filedialog.askopenfilename(title = "Seleccionar archivo")
     nombre = os.path.splitext(os.path.basename(archivo_abierto))[0]
     
     archivo_cifrado = open(archivo_abierto, "rb")
     cifrado = archivo_cifrado.read()
 
-    #archivo secret con iv ; key ; extension
+    #busca archivo public_secret o secret 
 
-    ruta = os.path.split(archivo_abierto)[0] + "/secret" + os.path.split(archivo_abierto)[1]
-    archivo_secret = open(ruta, "rb")
+    archivo_abierto_secret = filedialog.askopenfilename(title = "Seleccionar archivo secret")
+    nombre = os.path.split(archivo_abierto_secret)[1]
+    archivo_secret = open(archivo_abierto_secret, "rb")
     secret = archivo_secret.read()
+    archivo_secret.close()
 
-    #descifro archivo secret
+    #pregunto si el secret tiene public para ver si carga la clave privada
 
-    secret = decryptRSA(secret, clave_privada.read())
-    print(secret)
+    if ("public" in nombre):
+        
+        #busca clave privada para hacer rsa
+
+        archivo_clave = filedialog.askopenfilename(title = "Selecciona la clave")
+        clave_privada = open(archivo_clave, 'rb')
+
+            #descifro archivo secret
+
+        secret = decryptRSA(secret, clave_privada.read())
 
     #separo iv ; key ; extension
 
@@ -125,7 +140,6 @@ def descifrarArchivo():
     extension = listaSecret[2]
     print(extension.decode('utf-8'))
     
-
     #descifro archivo_cifrado
 
     cipher = AES.new(key, AES.MODE_CBC, iv)

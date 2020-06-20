@@ -1,2 +1,3 @@
 Pablo;$2b$12$4vHt9WUnxk61QWBQk6J2euwFSL7UMBuOiNZFHfKK5hW2nr7iB7d1a
 Maicool;$2b$12$l/fW0qDGLuB8QWgcLJ.aru.5.CbHBtsj58aA8W0aw.WJ7xPw6k0SO
+Luis;$2b$12$syPsyleNd9Y/iH34kC1z4OUl49/cUuoQWVmPWpWgbGVMsBy0M1CjK
